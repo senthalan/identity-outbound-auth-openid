@@ -22,21 +22,25 @@ import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.identity.application.authentication.framework.ApplicationAuthenticator;
 import org.wso2.carbon.identity.application.authenticator.openid.OpenIDAuthenticator;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.component.annotations.ReferenceCardinality;
+import org.osgi.service.component.annotations.ReferencePolicy;
 
-
-/**
- * @scr.component name="identity.application.authenticator.openid.component" immediate="true"
- */
+@Component(
+         name = "identity.application.authenticator.openid.component", 
+         immediate = true)
 public class OpenIDAuthenticatorServiceComponent {
 
     private static Log log = LogFactory.getLog(OpenIDAuthenticatorServiceComponent.class);
 
+    @Activate
     protected void activate(ComponentContext ctxt) {
         try {
             OpenIDAuthenticator openIdAuthenticator = new OpenIDAuthenticator();
-
             ctxt.getBundleContext().registerService(ApplicationAuthenticator.class.getName(), openIdAuthenticator, null);
-
             if (log.isDebugEnabled()) {
                 log.info("OpenID Authenticator bundle is activated");
             }
@@ -45,12 +49,13 @@ public class OpenIDAuthenticatorServiceComponent {
                 log.info("OpenID Authenticator bundle activation failed");
             }
         }
-
     }
 
+    @Deactivate
     protected void deactivate(ComponentContext ctxt) {
         if (log.isDebugEnabled()) {
             log.info("OpenID Authenticator bundle is deactivated");
         }
     }
 }
+
